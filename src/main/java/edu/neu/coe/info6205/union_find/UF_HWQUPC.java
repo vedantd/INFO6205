@@ -20,7 +20,8 @@ public class UF_HWQUPC implements UF {
      * @param q the integer representing the other site
      */
     public void connect(int p, int q) {
-        if (!isConnected(p, q)) union(p, q);
+        if (!isConnected(p, q))
+            union(p, q);
     }
 
     /**
@@ -81,13 +82,21 @@ public class UF_HWQUPC implements UF {
     public int find(int p) {
         validate(p);
         int root = p;
-        // TO BE IMPLEMENTED 
+        while (root != parent[root]) {
+            if (pathCompression) {
+                doPathCompression(root);
+            }
+            root = parent[root];
+        }
+        if (pathCompression) {
 
-
-
-
-
-throw new RuntimeException("implementation missing");
+            while (p != root) {
+                int next = parent[p];
+                parent[p] = root;
+                p = next;
+            }
+        }
+        return root;
     }
 
     /**
@@ -95,10 +104,12 @@ throw new RuntimeException("implementation missing");
      *
      * @param p the integer representing one site
      * @param q the integer representing the other site
-     * @return {@code true} if the two sites {@code p} and {@code q} are in the same component;
-     * {@code false} otherwise
+     * @return {@code true} if the two sites {@code p} and {@code q} are in the same
+     *         component;
+     *         {@code false} otherwise
      * @throws IllegalArgumentException unless
-     *                                  both {@code 0 <= p < n} and {@code 0 <= q < n}
+     *                                  both {@code 0 <= p < n} and
+     *                                  {@code 0 <= q < n}
      */
     public boolean connected(int p, int q) {
         return find(p) == find(q);
@@ -111,7 +122,8 @@ throw new RuntimeException("implementation missing");
      * @param p the integer representing one site
      * @param q the integer representing the other site
      * @throws IllegalArgumentException unless
-     *                                  both {@code 0 <= p < n} and {@code 0 <= q < n}
+     *                                  both {@code 0 <= p < n} and
+     *                                  {@code 0 <= q < n}
      */
     public void union(int p, int q) {
         // CONSIDER can we avoid doing find again?
@@ -167,31 +179,32 @@ throw new RuntimeException("implementation missing");
         return parent[i];
     }
 
-    private final int[] parent;   // parent[i] = parent of i
-    private final int[] height;   // height[i] = height of subtree rooted at i
-    private int count;  // number of components
+    private final int[] parent; // parent[i] = parent of i
+    private final int[] height; // height[i] = height of subtree rooted at i
+    private int count; // number of components
     private boolean pathCompression;
 
     private void mergeComponents(int i, int j) {
-        // TO BE IMPLEMENTED  make shorter root point to taller one
+        if (i == j)
+            return;
 
-
-
-
-
-
-
-        // SKELETON
-        // END SOLUTION
+        if (height[i] < height[j]) {
+            parent[i] = j;
+        } else if (height[j] < height[i]) {
+            parent[j] = i;
+        } else {
+            parent[j] = i;
+            height[i]++;
+        }
     }
 
     /**
      * This implements the single-pass path-halving mechanism of path compression
      */
     private void doPathCompression(int i) {
-        // TO BE IMPLEMENTED  update parent to value of grandparent
-
-        // SKELETON
-        // END SOLUTION
+        while (i != parent[i]) {
+            parent[i] = parent[parent[i]];
+            i = parent[i];
+        }
     }
 }
