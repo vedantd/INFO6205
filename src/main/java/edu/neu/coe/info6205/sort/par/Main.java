@@ -28,19 +28,19 @@ public class Main {
             long time;
             long startTime = System.currentTimeMillis();
             for (int t = 0; t < 10; t++) {
-                for (int i = 0; i < array.length; i++) array[i] = random.nextInt(10000000);
+                for (int i = 0; i < array.length; i++)
+                    array[i] = random.nextInt(10000000);
                 ParSort.sort(array, 0, array.length);
             }
             long endTime = System.currentTimeMillis();
             time = (endTime - startTime);
             timeList.add(time);
 
-
             System.out.println("cutoff：" + (ParSort.cutoff) + "\t\t10times Time:" + time + "ms");
 
         }
         try {
-            FileOutputStream fis = new FileOutputStream("./src/result.csv");
+            FileOutputStream fis = new FileOutputStream("result.csv");
             OutputStreamWriter isr = new OutputStreamWriter(fis);
             BufferedWriter bw = new BufferedWriter(isr);
             int j = 0;
@@ -60,7 +60,8 @@ public class Main {
     private static void processArgs(String[] args) {
         String[] xs = args;
         while (xs.length > 0)
-            if (xs[0].startsWith("-")) xs = processArg(xs);
+            if (xs[0].startsWith("-"))
+                xs = processArg(xs);
     }
 
     private static String[] processArg(String[] xs) {
@@ -71,11 +72,12 @@ public class Main {
     }
 
     private static void processCommand(String x, String y) {
-        if (x.equalsIgnoreCase("N")) setConfig(x, Integer.parseInt(y));
+        if (x.equalsIgnoreCase("N"))
+            setConfig(x, Integer.parseInt(y));
         else
-            // TODO sort this out
-            if (x.equalsIgnoreCase("P")) //noinspection ResultOfMethodCallIgnored
-                ForkJoinPool.getCommonPoolParallelism();
+        // TODO sort this out
+        if (x.equalsIgnoreCase("P")) // noinspection ResultOfMethodCallIgnored
+            ForkJoinPool.getCommonPoolParallelism();
     }
 
     private static void setConfig(String x, int i) {
@@ -84,6 +86,5 @@ public class Main {
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private static final Map<String, Integer> configuration = new HashMap<>();
-
 
 }

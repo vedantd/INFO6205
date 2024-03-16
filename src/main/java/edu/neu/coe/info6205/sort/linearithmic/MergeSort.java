@@ -49,7 +49,8 @@ public class MergeSort<X extends Comparable<X>> extends SortWithHelper<X> {
 
     @Override
     public void sort(X[] a, int from, int to) {
-        // CONSIDER don't copy but just allocate according to the xs/aux interchange optimization
+        // CONSIDER don't copy but just allocate according to the xs/aux interchange
+        // optimization
         X[] aux = Arrays.copyOf(a, a.length);
         sort(a, aux, from, to);
     }
@@ -64,24 +65,27 @@ public class MergeSort<X extends Comparable<X>> extends SortWithHelper<X> {
             return;
         }
 
-        // TO BE IMPLEMENTED  : implement merge sort with insurance and no-copy optimizations
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-throw new RuntimeException("implementation missing");
+        int mid = from + (to - from) / 2;
+        sort(aux, a, from, mid);
+        sort(aux, a, mid, to);
+        if (insurance && !helper.less(aux[mid], aux[mid - 1])) {
+            System.arraycopy(aux, from, a, from, to - from);
+            return;
+        }
+        if (noCopy) {
+            int i = from;
+            int j = mid;
+            for (int k = from; k < to; k++)
+                if (i >= mid)
+                    a[k] = aux[j++];
+                else if (j >= to)
+                    a[k] = aux[i++];
+                else if (helper.less(aux[j], aux[i]))
+                    a[k] = aux[j++];
+                else
+                    a[k] = aux[i++];
+        } else
+            merge(aux, a, from, mid, to);
     }
 
     // CONSIDER combine with MergeSortBasic perhaps.
@@ -90,12 +94,15 @@ throw new RuntimeException("implementation missing");
         int i = from;
         int j = mid;
         for (int k = from; k < to; k++)
-            if (i >= mid) helper.copy(sorted, j++, result, k);
-            else if (j >= to) helper.copy(sorted, i++, result, k);
+            if (i >= mid)
+                helper.copy(sorted, j++, result, k);
+            else if (j >= to)
+                helper.copy(sorted, i++, result, k);
             else if (helper.less(sorted[j], sorted[i])) {
                 helper.incrementFixes(mid - i);
                 helper.copy(sorted, j++, result, k);
-            } else helper.copy(sorted, i++, result, k);
+            } else
+                helper.copy(sorted, i++, result, k);
     }
 
     public static final String MERGESORT = "mergesort";
@@ -104,8 +111,10 @@ throw new RuntimeException("implementation missing");
 
     private static String getConfigString(Config config) {
         StringBuilder stringBuilder = new StringBuilder();
-        if (config.getBoolean(MERGESORT, INSURANCE)) stringBuilder.append(" with insurance comparison");
-        if (config.getBoolean(MERGESORT, NOCOPY)) stringBuilder.append(" with no copy");
+        if (config.getBoolean(MERGESORT, INSURANCE))
+            stringBuilder.append(" with insurance comparison");
+        if (config.getBoolean(MERGESORT, NOCOPY))
+            stringBuilder.append(" with no copy");
         return stringBuilder.toString();
     }
 
